@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: API_Challenege
+Bundle-SymbolicName: API_Challenge
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: API_Challenege.jar,
+ restlet-jse-2.2.3,
+ restlet-jse-2.2.3/lib/org.restlet.jar,
+ restlet-jse-2.2.3/lib/org.restlet.ext.gson.jar,
+ restlet-jse-2.2.3/lib/org.restlet.ext.json.jar
+Export-Package: bin,
+ src
