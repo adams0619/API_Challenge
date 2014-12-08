@@ -20,26 +20,32 @@ public class API {
 	
 	private static String API_URL_STAGE_1 = "http://challenge.code2040.org/api/getstring";
 	
+	private static String API_URL_STAGE_2 = "http://challenge.code2040.org/api/validatestring";
+	
     public static void main(String[] args) {
     	
     	String token = "";
  
     	//Register to API
     	String registerJson = "{\"email\":\"adamsombonga@gmail.com\",\"github\":\"http://github.com/adams0619\"}";
-    	token = postInformation(registerJson, true); 	
+    	System.out.println("Register JSON is: " + registerJson);
+    	token = postInformation(registerJson, true, false); 	
+    	System.out.println("Token is: " + token);
    
     	//Challenge #1
     	String tokenJson = "{\"token\":\"" + token + "\"}";
-    	String word = postInformation(tokenJson, false);
+    	String word = postInformation(tokenJson, false, false);
+    	System.out.println("Word is:  " + word);
     	String revWord = reverseMethod(word);
-    	String wordJson = "{\"token\":\"" + token + "\",\"result\":\"" + revWord + "\"}";
-//    	System.out.println(wordJson);
-    	postInformation(wordJson, false);
-    	
+    	String wordJson = "{\"token\":\"" + token + "\",\"string\":\"" + revWord + "\"}";
+    	System.out.println("Reversd word JSON: " + wordJson);
+    	//Post Reveresed String to API
+    	postInformation(wordJson, false, true);
+
     
    }
 
-    public static String postInformation(String postInfo, boolean regRun) {
+    public static String postInformation(String postInfo, boolean regRun, boolean lastRun) {
     	
     	String finalOutput = "";
    	
@@ -47,9 +53,11 @@ public class API {
     		URL targetUrl;
     		if (regRun) {
     			targetUrl = new URL(API_ENDPOINT);
-    		} else {
+    		} else if (!lastRun) { 
     			targetUrl = new URL(API_URL_STAGE_1);
-    		}
+    		} else {
+    			targetUrl = new URL(API_URL_STAGE_2);
+    		} 
 			HttpURLConnection httpConnection = (HttpURLConnection) targetUrl.openConnection();
 			httpConnection.setDoOutput(true);
 			httpConnection.setRequestMethod("POST");
@@ -72,7 +80,7 @@ public class API {
 			String output; 
 			System.out.println("Output from Server:\n");
 			while ((output = responseBuffer.readLine()) != null) {
-//				System.out.println(output);
+				System.out.println(output + "\n");
 				Gson gson = new GsonBuilder().create();
 				Result result = gson.fromJson(output, Result.class);
 				finalOutput = result.getResult();
@@ -85,8 +93,7 @@ public class API {
 		} catch (IOException e) {
 			 e.printStackTrace();
 		}
-
-//    	System.out.println("Word is:  " + finalOutput);
+    	
     	return finalOutput;
     }
     
@@ -95,7 +102,6 @@ public class API {
     	for (int i = 0; i < word.length(); i++) { 
     		revWord = word.charAt(i) + revWord;
     	}
-//    	System.out.println(revWord);
     	return revWord;
     }
     
