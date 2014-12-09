@@ -1,6 +1,6 @@
-package challenge2;
+package challenge3;
 
-import challenge2.Result;
+import challenge3.Result;
 
 /**
  * NestedJson class unravels nested JSON for Results class

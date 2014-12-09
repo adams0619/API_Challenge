@@ -1,5 +1,4 @@
-package challenge2;
-
+package challenge3;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,24 +13,24 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
  
 /**
- * CODE2040 API Challenge #2
- * We’re going to send you a dictionary with two values and keys. The first value, needle, is a string. 
- * The second value, haystack, is an array of strings. You’re going to tell the API where the needle is
- * in the array.
+ * CODE2040 API Challenge #3
+ * In this challenge, the API is going to give you another dictionary. The first value, prefix, is a string. 
+ * The second value, array, is an array of strings. Your job is to return an array containing only the strings 
+ * that do not start with that prefix.
  *  
  * @author Adams Ombonga
  * @version 1.0
  */
-public class Challenge_2_API {
-	
+public class Challenge_3_API {
+	//Class constants
 	private static String API_ENDPOINT = "http://challenge.code2040.org/api/register";
 	
-	private static String API_URL_STAGE_1 = "http://challenge.code2040.org/api/haystack";
+	private static String API_URL_STAGE_1 = "http://challenge.code2040.org/api/prefix";
 	
-	private static String API_URL_STAGE_2 = "http://challenge.code2040.org/api/validateneedle";
+	private static String API_URL_STAGE_2 = "http://challenge.code2040.org/api/validateprefix";
 	
     public static void main(String[] args) {
-    	
+    	//Token variable
     	String token = "";
  
     	//Register to API
@@ -40,15 +39,24 @@ public class Challenge_2_API {
     	token = postInformation(registerJson, true, false); 	
     	System.out.println("Token is: " + token);	
    
-    	//Challenge #2 exection
+    	//Challenge #3 execution
     	String tokenJson = "{\"token\":\"" + token + "\"}";
     	System.out.println(tokenJson);
-    	int needleIndex = Integer.parseInt(postInformation(tokenJson, false, false));
-    	System.out.println("Needle index [Main Method]: " + needleIndex);
-    	
-    	//Post needle index to API for validation
-    	String validJson = "{\"token\":\"" + token + "\",\"needle\":\"" + needleIndex + "\"}";
-    	System.out.println("Validate Json is " + validJson);
+    	String prefixString = postInformation(tokenJson, false, false);
+    	prefixString = "[" + prefixString + "]";
+     	System.out.println("Prefix array returned to main method: " + prefixString);
+    	String[] prefixArray = prefixString.split("'");
+     	System.out.println("Prefix Array length is: " + prefixArray.length);
+    	System.out.println(prefixArray[prefixArray.length - 1]);
+     	
+    	//Add prefixArray Strings to validation JSON
+    	//Validate prefixArray with API
+    	String validJson = "{\"token\":\"" + token + "\",\"array\":"; 
+    	for (int i =0;i < prefixArray.length; i++) {
+    		validJson += prefixArray[i];
+    	}
+    	validJson += "}";
+    	System.out.println("Validation JSON is " + validJson);
     	postInformation(validJson, false, true);     	
     
    }
@@ -57,9 +65,10 @@ public class Challenge_2_API {
     	
     	//Method Variables
     	String finalOutput = "";
-    	String needle;
-    	String[] haystack = {null};
+    	String prefix;
+    	String[] array = {null};
     	
+    	//HTTP Request and POST
     	try {
     		URL targetUrl;    		
     		if (regRun) {
@@ -109,30 +118,17 @@ public class Challenge_2_API {
 						finalOutput = result.getResult();
 					} else {
 						NestedJson result = gson.fromJson(output, NestedJson.class);
-						needle = result.getResult().getNeedle();
-						System.out.println("needle: " + needle);
-						haystack = result.getResult().getHaystack();
-						int i = 0;
-				    	while(i < haystack.length) {
-				    		System.out.println("haystack: " + i + " " + haystack[i]);
-				    		i++;
-				    	}
-				    	
-				    	//Code to find needle in haystack
-				    	for (int j = 0; j < haystack.length; j++) {
-				    		if (haystack[j].equalsIgnoreCase(needle)) {
-				    			System.out.println("Needle at index: " + j);
-				    			finalOutput = "";
-				    			finalOutput += j;
-				    		}
-				    	}
-				    	
+						prefix = result.getResult().getNeedle();
+						System.out.println("Prefix is: " + prefix);
+						array = result.getResult().getHaystack();
+						//Save buildArray output to finalOutput String
+						finalOutput = buildNewArray(array, prefix);	
 					}	
 				}	
 			}	
-
 			//Disconnect from HTTP Request client
 			httpConnection.disconnect();
+		//Catch & print any HTTP errors	
 		} catch (MalformedURLException e) {
 //			e.printStackTrace();
 			System.out.println("Malformed URL Error: " + e);
@@ -143,5 +139,30 @@ public class Challenge_2_API {
     	return finalOutput;
     }
     
-    
+    public static String buildNewArray(String[] array, String prefix) {
+    	String finalOutput;
+    	int i = 0;
+    	while(i < array.length) {
+    		System.out.println("array: " + i + " " + array[i]);
+    		i++;
+    	}
+    	
+    	//Code to find save array values without prefix
+		finalOutput = "";
+		System.out.println("\nReturned Array Length is: "  + array.length + "\n");
+    	for (int j = 0; j <= array.length - 1; j++) {
+    		if (array[j].contains(prefix)) {
+//    			System.out.println("Array value NOT added to String");
+//    			System.out.println("Array Value is "  + array[j]);
+    		} else {
+//    			System.out.println("Array value ADDED to String");
+//    			System.out.println("Array Value is "  + array[j]);
+    			finalOutput += "\"" + array[j] + "\"" + ",' ";
+    		}
+    	}
+		finalOutput = finalOutput.substring(0, finalOutput.length() - 3);
+    	System.out.println("Array is: "  + finalOutput);
+    	
+    	return finalOutput;
+    }
 }   

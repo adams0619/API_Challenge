@@ -1,4 +1,4 @@
-package challenge2;
+package challenge3;
 /**
  * Result class converts JSON to POJO
  * 
@@ -7,29 +7,29 @@ package challenge2;
  *
  */
 public class Result {
-	
-	private String needle;
-	private String[] haystack;
+
+	private String prefix;
+	private String[] array;
 	
 	public String getNeedle() {
-		return needle;
+		return prefix;
 	}
 	
 	public String[] getHaystack() {
-		return haystack;
+		return array;
 	}
 	
 	public void setNeedle(String needle) {
-		this.needle = needle;
+		this.prefix = needle;
 	}
 	
 	public void setHaystack(String[] haystack) {
-		this.haystack = haystack;
+		this.array = haystack;
 	}
 	
 	@Override
 	public String toString() {
-		return "Needle [needle=" + needle + "]";
+		return "Needle [needle=" + prefix + "]";
 	}
 	
 }
