@@ -31,15 +31,32 @@ import com.google.gson.GsonBuilder;
 public class Challenge_4_API {
 	
 	//Class constants	
+	/**
+	 * String variable containing our API Endpoint link 
+	 */	
 	private static String API_ENDPOINT = "http://challenge.code2040.org/api/register";
 	
+	/**
+	 * String variable containing our API Challenge link, which will return necessary info for the challenge
+	 */	
 	private static String API_URL_STAGE_1 = "http://challenge.code2040.org/api/time";
 	
+	/**
+	 * String variable containing our API Challenge verify link, which will let us know if we passed the challenge
+	 */
 	private static String API_URL_STAGE_2 = "http://challenge.code2040.org/api/validatetime";
 	
-    private static DateFormat ISO_8601_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-    
+	/**
+	 * DateFormat variable containing the date format in ISO_8601
+	 */
+	private static DateFormat ISO_8601_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
+	/**
+	 * Main method used to create a JSON that we pass to our postInformaton method which will either retrieve
+	 * or send to the API.
+	 * 
+	 * @param args, not used
+	 */
     public static void main(String[] args) {
     	//Set TimeZone for ISO8601 to 0 or no-offset with UTC
         ISO_8601_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -52,7 +69,7 @@ public class Challenge_4_API {
     	token = postInformation(registerJson, true, false); 	
     	System.out.println("Token is: " + token);
    
-    	//Challenge #1
+    	//Challenge #4
     	String tokenJson = "{\"token\":\"" + token + "\"}";
     	String finalTimeStamp = postInformation(tokenJson, false, false);
     	System.out.println("Final Time Stamp is:  " + finalTimeStamp);
@@ -63,14 +80,24 @@ public class Challenge_4_API {
     	//Post new TimeStamp String to API
     	postInformation(timeJson, false, true);
    }
-
+    /**
+     * This methods uses the passed parameters to determine how the passed JSON is posted to its corresponding API link
+     * using a HttpUrlConnection. The returned JSON is de-serialized using GSON and information is processed and and 
+     * returned as a String
+     * 
+     * @param postInfo, JSON that will be posted to the API
+     * @param regRun, boolean used to determine if this is the first the the method was called
+     * @param lastRun, boolean used to determine if this is the last time the method will be called
+     * @return finalOutPut, String containing the returned JSON information, or processed JSON information
+     */
     public static String postInformation(String postInfo, boolean regRun, boolean lastRun) {
     	
     	//Method Variables
     	String finalOutput = "";
     	String datestamp;
     	int interval;
-   	
+    	
+    	//Try-Catch block using a HTTP Url connection to POST/Retrieve information to the API
     	try {
     		URL targetUrl;
     		if (regRun) {
@@ -135,6 +162,14 @@ public class Challenge_4_API {
     	return finalOutput;
     }
     
+    /**
+     * Method used to return the datestamp with the appended time interval in ISO 8601 Format using the 
+     * passed datestamp String and the passed interval in seconds.
+     * 
+     * @param datestamp, date from API in ISO 8601 format
+     * @param interval, seconds to append to the date
+     * @return outDate, final date in ISO 8601 format with the seconds added to the datestamp 
+     */
     public static String appendISO_8601(String datestamp, long interval) {
     	long finalTimeMilli = 0;
 //    	System.out.println("Interval is:    " + interval);

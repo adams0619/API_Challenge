@@ -23,13 +23,28 @@ import com.google.gson.GsonBuilder;
  * @version 1.0
  */
 public class Challenge_2_API {
-	
+	//Class constants
+	/**
+	 * String variable containing our API Endpoint link 
+	 */	
 	private static String API_ENDPOINT = "http://challenge.code2040.org/api/register";
 	
+	/**
+	 * String variable containing our API Challenge link, which will return necessary info for the challenge
+	 */	
 	private static String API_URL_STAGE_1 = "http://challenge.code2040.org/api/haystack";
 	
+	/**
+	 * String variable containing our API Challenge verify link, which will let us know if we passed the challenge
+	 */
 	private static String API_URL_STAGE_2 = "http://challenge.code2040.org/api/validateneedle";
 	
+	/**
+	 * Main method used to create JSON that we pass and also call our postInformaton method which will either retrieve
+	 * or send to the API.
+	 * 
+	 * @param args, not used
+	 */
     public static void main(String[] args) {
     	
     	String token = "";
@@ -40,7 +55,7 @@ public class Challenge_2_API {
     	token = postInformation(registerJson, true, false); 	
     	System.out.println("Token is: " + token);	
    
-    	//Challenge #2 exection
+    	//Challenge #2 - Grab necessary data from JSON
     	String tokenJson = "{\"token\":\"" + token + "\"}";
     	System.out.println(tokenJson);
     	int needleIndex = Integer.parseInt(postInformation(tokenJson, false, false));
@@ -52,7 +67,17 @@ public class Challenge_2_API {
     	postInformation(validJson, false, true);     	
     
    }
-
+    
+    /**
+     * This methods uses the passed parameters to determine how the passed JSON is posted to its corresponding API link
+     * using a HttpUrlConnection. The returned JSON is de-serialized using GSON and information is processed and and 
+     * returned as a String
+     * 
+     * @param postInfo, JSON that will be posted to the API
+     * @param regRun, boolean used to determine if this is the first the the method was called
+     * @param lastRun, boolean used to determine if this is the last time the method will be called
+     * @return finalOutPut, String containing the returned JSON information, or processed JSON information
+     */
     public static String postInformation(String postInfo, boolean regRun, boolean lastRun) {
     	
     	//Method Variables
@@ -60,6 +85,7 @@ public class Challenge_2_API {
     	String needle;
     	String[] haystack = {null};
     	
+    	//Try-Catch block using a HTTP Url connection to POST/Retrieve information to the API
     	try {
     		URL targetUrl;    		
     		if (regRun) {

@@ -23,12 +23,27 @@ import com.google.gson.GsonBuilder;
  */
 public class Challenge_3_API {
 	//Class constants
+	/**
+	 * String variable containing our API Endpoint link 
+	 */	
 	private static String API_ENDPOINT = "http://challenge.code2040.org/api/register";
 	
+	/**
+	 * String variable containing our API Challenge link, which will return necessary info for the challenge
+	 */	
 	private static String API_URL_STAGE_1 = "http://challenge.code2040.org/api/prefix";
 	
+	/**
+	 * String variable containing our API Challenge verify link, which will let us know if we passed the challenge
+	 */
 	private static String API_URL_STAGE_2 = "http://challenge.code2040.org/api/validateprefix";
 	
+	/**
+	 * Main method used to create JSON that we pass and also call our postInformaton method which will either retrieve
+	 * or send to the API.
+	 * 
+	 * @param args, not used
+	 */
     public static void main(String[] args) {
     	//Token variable
     	String token = "";
@@ -60,7 +75,17 @@ public class Challenge_3_API {
     	postInformation(validJson, false, true);     	
     
    }
-
+    
+    /**
+     * This methods uses the passed parameters to determine how the passed JSON is posted to its corresponding API link
+     * using a HttpUrlConnection. The returned JSON is de-serialized using GSON and information is processed and and 
+     * returned as a String
+     * 
+     * @param postInfo, JSON that will be posted to the API
+     * @param regRun, boolean used to determine if this is the first the the method was called
+     * @param lastRun, boolean used to determine if this is the last time the method will be called
+     * @return finalOutPut, String containing the returned JSON information, or processed JSON information
+     */
     public static String postInformation(String postInfo, boolean regRun, boolean lastRun) {
     	
     	//Method Variables
@@ -68,7 +93,7 @@ public class Challenge_3_API {
     	String prefix;
     	String[] array = {null};
     	
-    	//HTTP Request and POST
+    	//Try-Catch block using a HTTP Url connection to POST/Retrieve information to the API
     	try {
     		URL targetUrl;    		
     		if (regRun) {
@@ -139,6 +164,14 @@ public class Challenge_3_API {
     	return finalOutput;
     }
     
+    /**
+     * This method uses the passed parameters to create a new array of Strings that do not
+     * contain the designated prefix
+     * 
+     * @param array, array of strings from API 
+     * @param prefix, String containing prefix used in sorting the passed array
+     * @return finalOutput, String containing words that don't have the prefix
+     */
     public static String buildNewArray(String[] array, String prefix) {
     	String finalOutput;
     	int i = 0;
